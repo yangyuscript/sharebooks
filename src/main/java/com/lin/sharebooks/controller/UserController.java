@@ -352,7 +352,7 @@ public class UserController {
      *@return:Map
      *@date: 19:51 2018/2/25
      **/
-    @ApiOperation(value="微信小程序",notes = "获取fromuser和touser所有的聊天信息")
+    @ApiOperation(value="微信小程序急急急",notes = "获取fromuser和touser所有的聊天信息")
     @RequestMapping(value="/getAllMessagesFromAndTo",method = RequestMethod.POST)
     public Map<String,Object> getAllMessagesFromAndTo(@RequestParam("fromuserid")String fromuserid,@RequestParam("token")String token){
         Map map=new HashMap();

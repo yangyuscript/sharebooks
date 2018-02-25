@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MessageServiceImpl implements MessageService {
@@ -30,5 +31,10 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<Message> findAllByTouseridAndFromuserid(int touserid, int fromuserid) {
         return messageMapper.findAllByTouseridAndFromuserid(touserid,fromuserid);
+    }
+
+    @Override
+    public int getPersonalIniaData(int touserid) {
+        return messageMapper.getUserMessagesNotReadedNum(touserid);
     }
 }

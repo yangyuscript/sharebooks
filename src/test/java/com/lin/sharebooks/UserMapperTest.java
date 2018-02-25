@@ -1,6 +1,7 @@
 package com.lin.sharebooks;
 
 import com.lin.sharebooks.mapper.BookMapper;
+import com.lin.sharebooks.mapper.MessageMapper;
 import com.lin.sharebooks.mapper.UserMapper;
 
 import com.lin.sharebooks.model.User;
@@ -19,6 +20,8 @@ public class UserMapperTest {
     private UserMapper mapper;
     @Autowired(required = false)
     private BookMapper bookMapper;
+    @Autowired(required = false)
+    private MessageMapper messageMapper;
     @Test
     public void testInsert(){
 //        User user=new User("lin2","123","123","123",123 ,1);
@@ -34,5 +37,6 @@ public class UserMapperTest {
         //User user=mapper.selectByName("test@qq.com");
         //System.out.println(user.getNickname());
         //System.out.println(readerMapper.selectByAccount("B"));
+        System.out.println(messageMapper.getUserMessagesNotReadedNum(32));
     }
 }

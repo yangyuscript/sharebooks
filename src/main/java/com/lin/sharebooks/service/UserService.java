@@ -5,6 +5,7 @@ import com.lin.sharebooks.model.User;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
     public void addUser(User user);

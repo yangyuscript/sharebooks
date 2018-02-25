@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.lin.sharebooks.model.Book;
 import com.lin.sharebooks.model.Loginlog;
+import com.lin.sharebooks.model.Message;
 import com.lin.sharebooks.model.User;
 import com.lin.sharebooks.service.BookService;
 import com.lin.sharebooks.service.LoginlogService;
+import com.lin.sharebooks.service.MessageService;
 import com.lin.sharebooks.service.UserService;
 import com.lin.sharebooks.util.*;
 import io.swagger.annotations.ApiOperation;
@@ -37,6 +39,8 @@ public class UserController {
     private LoginlogService loginlogService;
     @Autowired
     private BookService bookService;
+    @Autowired
+    private MessageService messageService;
     /**
      * 用户注册时，检查邮箱是否已被注册使用
      * @param email
@@ -294,6 +298,72 @@ public class UserController {
             map.put("status",ResultMsg.OK);
         }else{
             map.put("status",ResultMsg.NO);
+        }
+        return map;
+    }
+
+    /**
+     *微信小程序获取personal页面所需数据
+     *@params:touserid
+     *@return:Map
+     *@date: 17:08 2018/2/25
+     **/
+    @ApiOperation(value="微信小程序",notes = "获取personal页面所需数据")
+    @RequestMapping(value="/getPersonalIniaData",method = RequestMethod.POST)
+    public Map<String,Object> getPersonalIniaData(@RequestParam("token")String token){
+        Map map=new HashMap();
+        String openid=redisComponent.get(token);
+        User user=userService.getByOpenid(openid);
+        if(user!=null){
+            int messagesNotReadedNum=messageService.getPersonalIniaData(user.getUserId());
+            map.put("messageNotReadedNum",messagesNotReadedNum);
+            map.put("result",ResultMsg.OK);
+        }else{
+            map.put("result", ResultMsg.NO);
+        }
+        return map;
+    }
+
+    /**
+     *微信小程序获取用户和其他用户聊天的最新的message
+     *@params:touserid
+     *@return:Map
+     *@date: 17:50 2018/2/25
+     **/
+    @ApiOperation(value="微信小程序",notes = "获取personal页面所需数据")
+    @RequestMapping(value="/getAllLastestMessagesToUser",method = RequestMethod.POST)
+    public Map<String,Object> getAllLastestMessagesToUser(@RequestParam("token")String token){
+        Map map=new HashMap();
+        String openid=redisComponent.get(token);
+        User user=userService.getByOpenid(openid);
+        if(user!=null){
+            List<Message> latestMessagesToUser=messageService.findAllByTouserid(user.getUserId());
+            map.put("latestMessagesToUser",latestMessagesToUser);
+            map.put("result",ResultMsg.OK);
+        }else{
+            map.put("result", ResultMsg.NO);
+        }
+        return map;
+    }
+
+    /**
+     *微信小程序获取fromuser和touser所有的聊天信息
+     *@params:fromuserid,token
+     *@return:Map
+     *@date: 19:51 2018/2/25
+     **/
+    @ApiOperation(value="微信小程序",notes = "获取fromuser和touser所有的聊天信息")
+    @RequestMapping(value="/getAllMessagesFromAndTo",method = RequestMethod.POST)
+    public Map<String,Object> getAllMessagesFromAndTo(@RequestParam("fromuserid")String fromuserid,@RequestParam("token")String token){
+        Map map=new HashMap();
+        String openid=redisComponent.get(token);
+        User touser=userService.getByOpenid(openid);
+        if(touser!=null){
+            List<Message> allMessagesFromAndTo=messageService.findAllByTouseridAndFromuserid(touser.getUserId(),Integer.valueOf(fromuserid));
+            map.put("allMessagesFromAndTo",allMessagesFromAndTo);
+            map.put("result",ResultMsg.OK);
+        }else{
+            map.put("result", ResultMsg.NO);
         }
         return map;
     }

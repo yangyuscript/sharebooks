@@ -23,10 +23,10 @@ public interface MessageMapper extends MyMapper<Message> {
             @Result(column = "condi",property = "condi"),
             @Result(column = "time",property = "time"),
             @Result(column="fromuserid",property = "fromuser",
-                    one=@One(select="com.lin.appapidemo.mapper.UserMapper.selectById")
+                    one=@One(select="com.lin.sharebooks.mapper.UserMapper.selectById")
             ),
             @Result(column = "touserid",property = "touser",
-                    one=@One(select="com.lin.appapidemo.mapper.UserMapper.selectById")
+                    one=@One(select="com.lin.sharebooks.mapper.UserMapper.selectById")
             )
     })
     List<Message> findAllByTouserid(int touserid);
@@ -36,7 +36,7 @@ public interface MessageMapper extends MyMapper<Message> {
      *@return:List<Message>
      *@date: 21:54 2017/12/28
      **/
-    @Select("select * from t_message where (touserid=#{touserid} and fromuserid=#{fromuserid}) or (touserid=#{fromuserid} and fromuserid=#{touserid}) order by time desc")
+    @Select("select * from t_message where (touserid=#{touserid} and fromuserid=#{fromuserid}) or (touserid=#{fromuserid} and fromuserid=#{touserid}) order by time asc")
     @Results({
             @Result(id=true,column="mid",property = "mid"),
             @Result(column = "fromuserid",property = "fromuserid"),
@@ -45,11 +45,19 @@ public interface MessageMapper extends MyMapper<Message> {
             @Result(column = "condi",property = "condi"),
             @Result(column = "time",property = "time"),
             @Result(column="fromuserid",property = "fromuser",
-                    one=@One(select="com.lin.appapidemo.mapper.UserMapper.selectById")
+                    one=@One(select="com.lin.sharebooks.mapper.UserMapper.selectById")
             ),
             @Result(column = "touserid",property = "touser",
-                    one=@One(select="com.lin.appapidemo.mapper.UserMapper.selectById")
+                    one=@One(select="com.lin.sharebooks.mapper.UserMapper.selectById")
             )
     })
     List<Message> findAllByTouseridAndFromuserid(@Param("touserid") int touserid, @Param("fromuserid") int fromuserid);
+    /**
+     *获取小程序personal页面的初始数据（未读消息数及未读通知数）
+     *@params:touserid
+     *@return:
+     *@date: 15:38 2018/2/25
+     **/
+    @Select("select count(*) from t_message where touserid=#{touserid} and condi=1")
+    Integer getUserMessagesNotReadedNum(@Param("touserid")int touserid);
 }

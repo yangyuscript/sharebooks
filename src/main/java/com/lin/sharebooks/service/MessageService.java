@@ -8,6 +8,7 @@ import java.util.Map;
 public interface MessageService {
     void addMessage(Message message);
     void deleteMessage(int mid);
+    void updateMessage(Message message);
     List<Message> findAllByTouserid(int touserid);
     List<Message> findAllByTouseridAndFromuserid(int touserid, int fromuserid);
     /**
@@ -16,5 +17,12 @@ public interface MessageService {
      *@return:Integer
      *@date: 15:40 2018/2/25
      **/
-    public int getPersonalIniaData(int touserid);
+    int getPersonalIniaData(int touserid);
+    /**
+     *找到两用户间所有未读信息
+     *@params:touserid,fromuserid
+     *@return:List<Message>
+     *@date: 19:37 2018/2/27
+     **/
+    List<Message> findAllNotReadedBetween(int touserid,int fromuserid);
 }

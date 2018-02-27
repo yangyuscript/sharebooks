@@ -352,15 +352,65 @@ public class UserController {
      *@return:Map
      *@date: 19:51 2018/2/25
      **/
-    @ApiOperation(value="微信小程序急急急",notes = "获取fromuser和touser所有的聊天信息")
+    @ApiOperation(value="微信小程序",notes = "获取fromuser和touser所有的聊天信息")
     @RequestMapping(value="/getAllMessagesFromAndTo",method = RequestMethod.POST)
     public Map<String,Object> getAllMessagesFromAndTo(@RequestParam("fromuserid")String fromuserid,@RequestParam("token")String token){
         Map map=new HashMap();
         String openid=redisComponent.get(token);
         User touser=userService.getByOpenid(openid);
         if(touser!=null){
+            //改变未读消息condi为0已读状态
+            List<Message> notReadedNews=messageService.findAllNotReadedBetween(touser.getUserId(),Integer.valueOf(fromuserid));
+            for (Message m:notReadedNews) {
+                Message nm=m.setCondi(0);
+                messageService.updateMessage(nm);
+            }
+            //获取用户间所有信息
             List<Message> allMessagesFromAndTo=messageService.findAllByTouseridAndFromuserid(touser.getUserId(),Integer.valueOf(fromuserid));
             map.put("allMessagesFromAndTo",allMessagesFromAndTo);
+            map.put("result",ResultMsg.OK);
+        }else{
+            map.put("result", ResultMsg.NO);
+        }
+        return map;
+    }
+    /**
+     *用户发送信息
+     *@params:token,fromuserid,message
+     *@return:'ok'
+     *@date: 21:26 2018/2/26
+     **/
+    @ApiOperation(value="微信小程序",notes = "用户发送信息")
+    @RequestMapping(value="/sendMessage",method = RequestMethod.POST)
+    public Map<String,Object> sendMessage(@RequestParam("token")String token,@RequestParam("touserid")String touserid,@RequestParam("message")String message){
+        Map map=new HashMap();
+        String openid=redisComponent.get(token);
+        User fromuser=userService.getByOpenid(openid);
+        if(fromuser!=null){
+            Message m=new Message(fromuser.getUserId(),Integer.valueOf(touserid),message,1,DateTimeUtil.getDate());
+            messageService.addMessage(m);
+            map.put("result",ResultMsg.OK);
+        }else{
+            map.put("result", ResultMsg.NO);
+        }
+        return map;
+    }
+    /**
+     *微信小程序获取用户发布的书籍(分页)
+     *@params:token,currPage
+     *@return:Map
+     *@date: 20:43 2018/2/27
+     **/
+    @ApiOperation(value="微信小程序",notes = "获取用户发布的书籍(分页)")
+    @RequestMapping(value="/findMyBooks",method = RequestMethod.POST)
+    public Map<String,Object> findMyBooks(@RequestParam("token")String token,@RequestParam("currPage")String currPage){
+        Map map=new HashMap();
+        String openid=redisComponent.get(token);
+        User user=userService.getByOpenid(openid);
+        if(user!=null){
+            PageHelper.startPage(Integer.valueOf(currPage),ResultMsg.PAGESIZE);
+            List<Book> myBooks=bookService.findByUserid(user.getUserId());
+            map.put("myBooks",myBooks);
             map.put("result",ResultMsg.OK);
         }else{
             map.put("result", ResultMsg.NO);

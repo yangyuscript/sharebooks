@@ -60,4 +60,13 @@ public interface MessageMapper extends MyMapper<Message> {
      **/
     @Select("select count(*) from t_message where touserid=#{touserid} and condi=1")
     Integer getUserMessagesNotReadedNum(@Param("touserid")int touserid);
+    
+    /**
+     *找到用户间的所有未读信息
+     *@params:touserid,fromuserid
+     *@return:List
+     *@date: 19:33 2018/2/27
+     **/
+    @Select("select * from t_message where touserid=#{touserid} and fromuserid=#{fromuserid}")
+    List<Message> findAllNotReadedNewsBetween(@Param("touserid") int touserid,@Param("fromuserid") int fromuserid);
 }

@@ -37,4 +37,14 @@ public class MessageServiceImpl implements MessageService {
     public int getPersonalIniaData(int touserid) {
         return messageMapper.getUserMessagesNotReadedNum(touserid);
     }
+
+    @Override
+    public List<Message> findAllNotReadedBetween(int touserid, int fromuserid) {
+        return messageMapper.findAllNotReadedNewsBetween(touserid,fromuserid);
+    }
+
+    @Override
+    public void updateMessage(Message message) {
+        messageMapper.updateByPrimaryKey(message);
+    }
 }

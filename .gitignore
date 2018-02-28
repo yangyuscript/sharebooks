@@ -23,5 +23,5 @@ dist/
 nbdist/
 .nb-gradle/
 
-### Propertity
+### Propertitytest
 *.properties

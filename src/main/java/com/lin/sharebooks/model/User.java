@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Table(name="t_user")
 public class User {
     @Id
-    @Column(name="userid")
+    @Column(name="userId")
     private int userId;
     @Column(name="email")
     private String email;

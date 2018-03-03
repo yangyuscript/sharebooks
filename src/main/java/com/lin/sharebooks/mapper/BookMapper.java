@@ -82,10 +82,10 @@ public interface BookMapper extends MyMapper<Book>{
             @Result(column = "time",property = "time"),
             @Result(column = "likenum",property = "likenum"),
             @Result(column="userid",property = "user",
-                one=@One(select="com.lin.appapidemo.mapper.UserMapper.selectById")
+                one=@One(select="com.lin.sharebooks.mapper.UserMapper.selectById")
             ),
             @Result(column = "btid",property = "bookType",
-                    one=@One(select="com.lin.appapidemo.mapper.BookTypeMapper.selectByBtid")
+                    one=@One(select="com.lin.sharebooks.mapper.BookTypeMapper.selectByBtid")
             )
     })
     List<Book> selectAllWithTerms(@Param("bookname") String bookname, @Param("btid") int btid, @Param("condi") int condi, @Param("time") String time);

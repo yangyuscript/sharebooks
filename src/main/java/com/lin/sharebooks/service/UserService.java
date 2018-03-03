@@ -55,4 +55,11 @@ public interface UserService {
      *@date: 22:16 2018/2/8
      **/
     public void update(User user);
+    /**
+     *根据用户昵称、身份、注册时间模糊查询用户
+     *@params:nickname,condi,time
+     *@return:List<User>
+     *@date: 15:48 2018/3/3
+     **/
+    List<User> findUsersWithTerms(String nickname,int condi,String time);
 }

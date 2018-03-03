@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -55,6 +56,22 @@ public class IndexController {
         List<Book> newestBooks=bookService.findNewestBooks();
         map.put("recomendBooks",recomendBooks);
         map.put("newestBooks",newestBooks);
+        return map;
+    }
+    /**
+     *微信小程序用户关键词查看书籍
+     *@params:currPage,searchKey
+     *@return:Map
+     *@date: 21:29 2018/2/28
+     **/
+    @ApiOperation(value="微信小程序",notes = "关键词查看书籍")
+    @RequestMapping(value="/searchBooks",method = RequestMethod.GET)
+    public Map<String,Object> searchBooks(@RequestParam("searchKey")String searchKey,@RequestParam("currPage")String currPage){
+        Map map=new HashMap();
+        PageHelper.startPage(Integer.valueOf(currPage),ResultMsg.PAGESIZE);
+        List<Book> searchBooks=bookService.findAllWithTerms(searchKey,0,2,null);
+        map.put("searchBooks",searchBooks);
+        map.put("result",ResultMsg.OK);
         return map;
     }
 }

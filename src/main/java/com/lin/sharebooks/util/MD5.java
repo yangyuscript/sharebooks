@@ -13,4 +13,14 @@ public class MD5 {
         String newStr=base64Encoder.encode(md5.digest(str.getBytes("utf-8")));
         return newStr;
     }
+
+    public static void main(String[] args){
+        try {
+            System.out.println(MD5.EncodeByMD5("123456"));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
 }

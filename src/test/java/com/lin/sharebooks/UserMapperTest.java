@@ -37,6 +37,6 @@ public class UserMapperTest {
         //User user=mapper.selectByName("test@qq.com");
         //System.out.println(user.getNickname());
         //System.out.println(readerMapper.selectByAccount("B"));
-        System.out.println(messageMapper.getUserMessagesNotReadedNum(32));
+        System.out.println(mapper.selectAllWithTerms(null,3,null));
     }
 }

@@ -62,4 +62,9 @@ public class UserServiceImpl implements UserService{
     public void update(User user) {
         userMapper.updateByPrimaryKeySelective(user);
     }
+
+    @Override
+    public List<User> findUsersWithTerms(String nickname, int condi, String time) {
+        return userMapper.selectAllWithTerms(nickname,condi,time);
+    }
 }

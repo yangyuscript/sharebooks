@@ -27,4 +27,10 @@ public class PostServiceImpl implements PostService{
     public List<Post> findAllPosts() throws Exception {
         return postMapper.selectAll();
     }
+
+
+    @Override
+    public List<Post> findAllWithTerms(String title,String time) throws Exception {
+        return postMapper.findAllWithTerms(title,time);
+    }
 }

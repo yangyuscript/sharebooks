@@ -3,14 +3,9 @@ package com.lin.sharebooks.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
-import com.lin.sharebooks.model.Book;
-import com.lin.sharebooks.model.Loginlog;
-import com.lin.sharebooks.model.Message;
-import com.lin.sharebooks.model.User;
-import com.lin.sharebooks.service.BookService;
-import com.lin.sharebooks.service.LoginlogService;
-import com.lin.sharebooks.service.MessageService;
-import com.lin.sharebooks.service.UserService;
+import com.github.pagehelper.PageInfo;
+import com.lin.sharebooks.model.*;
+import com.lin.sharebooks.service.*;
 import com.lin.sharebooks.util.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +36,8 @@ public class UserController {
     private BookService bookService;
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private PostService postService;
     /**
      * 用户注册时，检查邮箱是否已被注册使用
      * @param email
@@ -415,6 +412,24 @@ public class UserController {
         }else{
             map.put("result", ResultMsg.NO);
         }
+        return map;
+    }
+    /**
+     *微信小程序用户获取帖子（分页）
+     *@params:token,currPage
+     *@return:Map
+     *@date: 22:50 2018/3/21
+     **/
+    @ApiOperation(value = "微信小程序用户获取帖子（分页）",notes = "一页默认10个记录")
+    @RequestMapping(value="/getAllPosts",method = RequestMethod.POST)
+    public Map<String,Object> getAllPosts(@RequestParam("token")String token,@RequestParam("currentPage")String currentPage) throws Exception {
+        Map<String,Object> map=new HashMap<>();
+        PageHelper.startPage(Integer.valueOf(currentPage),ResultMsg.PAGESIZE);
+        List<Post> list=postService.findAllWithTerms(null,null);
+        PageInfo<Post> pageInfo=new PageInfo<>(list);
+        map.put("posts",list);
+        map.put("pageInfo",pageInfo);
+        map.put("status", ResultMsg.OK);
         return map;
     }
 }

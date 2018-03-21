@@ -8,4 +8,5 @@ public interface NoticeService {
     void addNotice(Notice notice);
     void deleteNotice(int nid);
     List<Notice> findAll();
+    List<Notice> findAllWithTerms(String title,String time);
 }

@@ -16,7 +16,7 @@ public class Notice {
     @Id
     private int nid;
     @Column(name = "title")
-    private String varchar;
+    private String title;
     @Column(name = "content")
     private String content;
     @Column(name = "condi")
@@ -24,8 +24,8 @@ public class Notice {
     @Column(name = "time")
     private String time;
 
-    public Notice(String varchar, String content, int condi, String time) {
-        this.varchar = varchar;
+    public Notice(String title, String content, int condi, String time) {
+        this.title = title;
         this.content = content;
         this.condi = condi;
         this.time = time;

@@ -2,12 +2,8 @@ package com.lin.sharebooks.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.lin.sharebooks.model.Book;
-import com.lin.sharebooks.model.BookType;
-import com.lin.sharebooks.model.User;
-import com.lin.sharebooks.service.BookService;
-import com.lin.sharebooks.service.BookTypeService;
-import com.lin.sharebooks.service.UserService;
+import com.lin.sharebooks.model.*;
+import com.lin.sharebooks.service.*;
 import com.lin.sharebooks.util.DateTimeUtil;
 import com.lin.sharebooks.util.ResultMsg;
 import io.swagger.annotations.ApiOperation;
@@ -30,6 +26,10 @@ public class SuperController {
     private BookService bookService;
     @Autowired
     private BookTypeService bookTypeService;
+    @Autowired
+    private PostService postService;
+    @Autowired
+    private NoticeService noticeService;
     /**
      *管理员获得所有用户信息
      *@params:
@@ -91,7 +91,7 @@ public class SuperController {
      *@return:Map
      *@date: 20:10 2018/3/3
      **/
-    @ApiOperation(value = "管理员获取书籍（模糊查询，分页）",notes = "管理员权限,一页默认10个记录")
+    @ApiOperation(value = "管理员新增书籍种类",notes = "管理员新增书籍种类")
     @RequestMapping(value="/addBookType",method = RequestMethod.POST)
     public Map<String,Object> addBookType(@RequestParam("btname")String btname){
         Map<String,Object> map=new HashMap<>();
@@ -110,6 +110,101 @@ public class SuperController {
     public Map<String,Object> delBookType(@RequestParam("btid")String btid){
         Map<String,Object> map=new HashMap<>();
         bookTypeService.deleteByBtid(Integer.valueOf(btid));
+        map.put("status", ResultMsg.OK);
+        return map;
+    }
+    /**
+     *管理员获取帖子（根据帖子标题模糊查询）
+     *@params:title,currentPage
+     *@return:Map
+     *@date: 22:22 2018/3/7
+     **/
+    @ApiOperation(value = "管理员获取帖子（根据帖子标题模糊查询）",notes = "管理员权限,一页默认10个记录")
+    @RequestMapping(value="/getAllPosts",method = RequestMethod.POST)
+    public Map<String,Object> getAllPosts(@RequestParam("title")String title,@RequestParam("currentPage")String currentPage) throws Exception {
+        Map<String,Object> map=new HashMap<>();
+        PageHelper.startPage(Integer.valueOf(currentPage),ResultMsg.PAGESIZE);
+        List<Post> list=postService.findAllWithTerms(title,null);
+        PageInfo<Post> pageInfo=new PageInfo<>(list);
+        map.put("posts",list);
+        map.put("pageInfo",pageInfo);
+        map.put("status", ResultMsg.OK);
+        return map;
+    }
+
+    /**
+     *管理员新增帖子
+     *@params:title,content
+     *@return:Map
+     *@date: 20:10 2018/3/3
+     **/
+    @ApiOperation(value = "管理员新增帖子",notes = "管理员新增帖子")
+    @RequestMapping(value="/addPost",method = RequestMethod.POST)
+    public Map<String,Object> addPost(@RequestParam("title")String title,@RequestParam("content")String content) throws Exception {
+        Map<String,Object> map=new HashMap<>();
+        postService.addPost(new Post(title,content,0,DateTimeUtil.getDate()));
+        map.put("status", ResultMsg.OK);
+        return map;
+    }
+    /**
+     *管理员删除帖子
+     *@params:postid
+     *@return:
+     *@date: 22:41 2018/3/7
+     **/
+    @ApiOperation(value = "管理员删除帖子",notes = "管理员删除帖子")
+    @RequestMapping(value="/delPost",method = RequestMethod.POST)
+    public Map<String,Object> delPost(@RequestParam("postid")String postid) throws Exception {
+        Map<String,Object> map=new HashMap<>();
+        postService.deletePost(Integer.parseInt(postid));
+        map.put("status", ResultMsg.OK);
+        return map;
+    }
+
+    /**
+     *管理员获取通知（根据通知标题模糊查询）
+     *@params:title,currentPage
+     *@return:Map
+     *@date: 22:22 2018/3/7
+     **/
+    @ApiOperation(value = "管理员获取通知（根据通知标题模糊查询）",notes = "管理员权限,一页默认10个记录")
+    @RequestMapping(value="/getAllNotices",method = RequestMethod.POST)
+    public Map<String,Object> getAllNotices(@RequestParam("title")String title,@RequestParam("currentPage")String currentPage) throws Exception {
+        Map<String,Object> map=new HashMap<>();
+        PageHelper.startPage(Integer.valueOf(currentPage),ResultMsg.PAGESIZE);
+        List<Notice> list=noticeService.findAllWithTerms(title,null);
+        PageInfo<Notice> pageInfo=new PageInfo<>(list);
+        map.put("notices",list);
+        map.put("pageInfo",pageInfo);
+        map.put("status", ResultMsg.OK);
+        return map;
+    }
+
+    /**
+     *管理员新增通知
+     *@params:title,content
+     *@return:Map
+     *@date: 20:10 2018/3/3
+     **/
+    @ApiOperation(value = "管理员新增通知",notes = "管理员新增通知")
+    @RequestMapping(value="/addNotice",method = RequestMethod.POST)
+    public Map<String,Object> addNotice(@RequestParam("title")String title,@RequestParam("content")String content) throws Exception {
+        Map<String,Object> map=new HashMap<>();
+        noticeService.addNotice(new Notice(title,content,0,DateTimeUtil.getDate()));
+        map.put("status", ResultMsg.OK);
+        return map;
+    }
+    /**
+     *管理员删除通知
+     *@params:nid
+     *@return:
+     *@date: 22:41 2018/3/7
+     **/
+    @ApiOperation(value = "管理员删除帖子",notes = "管理员删除帖子")
+    @RequestMapping(value="/delNotice",method = RequestMethod.POST)
+    public Map<String,Object> delNotice(@RequestParam("nid")String nid) throws Exception {
+        Map<String,Object> map=new HashMap<>();
+        noticeService.deleteNotice(Integer.parseInt(nid));
         map.put("status", ResultMsg.OK);
         return map;
     }

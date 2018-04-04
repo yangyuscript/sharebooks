@@ -99,8 +99,9 @@ public class UserController {
         if(user!=null){
             //账号密码正确，登录成功
             String token= MD5.EncodeByMD5(user.getUserId()+UUID.randomUUID().toString());
-            redisComponent.sentinelSet(token,objectMapper.writeValueAsString(user));
-            System.out.println("hahaaha"+redisComponent.sentinelGet(token));
+            //redisComponent.sentinelSet(token,objectMapper.writeValueAsString(user));
+            redisComponent.sentinelSet(token,user.getUserId());
+            redisComponent.setLongExpire(token);
             map.put("token",token);
             map.put("loginUser",user);
             map.put("status",ResultMsg.OK);

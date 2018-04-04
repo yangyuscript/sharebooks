@@ -33,4 +33,9 @@ public class PostServiceImpl implements PostService{
     public List<Post> findAllWithTerms(String title,String time) throws Exception {
         return postMapper.findAllWithTerms(title,time);
     }
+
+    @Override
+    public Post getByPostid(int postid) throws Exception {
+        return postMapper.selectByPrimaryKey(postid);
+    }
 }

@@ -74,4 +74,10 @@ public class IndexController {
         map.put("result",ResultMsg.OK);
         return map;
     }
+    /**
+     *
+     *@params:
+     *@return:
+     *@date: 21:46 2018/3/25
+     **/
 }

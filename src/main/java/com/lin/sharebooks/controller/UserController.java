@@ -38,6 +38,8 @@ public class UserController {
     private MessageService messageService;
     @Autowired
     private PostService postService;
+    @Autowired
+    private NoticeService noticeService;
     /**
      * 用户注册时，检查邮箱是否已被注册使用
      * @param email
@@ -430,6 +432,52 @@ public class UserController {
         map.put("posts",list);
         map.put("pageInfo",pageInfo);
         map.put("status", ResultMsg.OK);
+        return map;
+    }
+    /**
+     *微信小程序用户查看帖子详情
+     *@params:postid
+     *@return:map
+     *@date: 18:57 2018/3/25
+     **/
+    @ApiOperation(value="微信小程序",notes = "用户查看帖子详情（根据帖子id查找帖子详情）")
+    @RequestMapping(value="/getDetailPostByPostid",method = RequestMethod.POST)
+    public Map<String,Object> getDetailPostByPostid(@RequestParam("postid")int postid) throws Exception {
+        Map map=new HashMap();
+        Post post=postService.getByPostid(postid);
+        map.put("post",post);
+        return map;
+    }
+    /**
+     *微信小程序用户获取通知
+     *@params:currentPage
+     *@return:Map
+     *@date: 21:34 2018/3/25
+     **/
+    @ApiOperation(value = "微信小程序用户获取通知",notes = "一页默认10个记录")
+    @RequestMapping(value="/getAllNotices",method = RequestMethod.POST)
+    public Map<String,Object> getAllNotices(@RequestParam("currentPage")String currentPage) throws Exception {
+        Map<String,Object> map=new HashMap<>();
+        PageHelper.startPage(Integer.valueOf(currentPage),ResultMsg.PAGESIZE);
+        List<Notice> list=noticeService.findAllWithTerms(null,null);
+        PageInfo<Notice> pageInfo=new PageInfo<>(list);
+        map.put("notices",list);
+        map.put("pageInfo",pageInfo);
+        map.put("status", ResultMsg.OK);
+        return map;
+    }
+    /**
+     *微信小程序用户查看通知详情
+     *@params:nid
+     *@return:map
+     *@date: 18:57 2018/3/25
+     **/
+    @ApiOperation(value="微信小程序",notes = "用户查看通知详情（根据nid查找通知详情）")
+    @RequestMapping(value="/getDetailNoticeByNid",method = RequestMethod.POST)
+    public Map<String,Object> getDetailNoticeByNid(@RequestParam("nid")int nid) throws Exception {
+        Map map=new HashMap();
+        Notice notice=noticeService.getByNid(nid);
+        map.put("notice",notice);
         return map;
     }
 }

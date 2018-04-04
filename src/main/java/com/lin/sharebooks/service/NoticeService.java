@@ -9,4 +9,5 @@ public interface NoticeService {
     void deleteNotice(int nid);
     List<Notice> findAll();
     List<Notice> findAllWithTerms(String title,String time);
+    Notice getByNid(int nid);
 }

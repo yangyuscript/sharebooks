@@ -31,4 +31,9 @@ public class NoticeServiceImpl implements NoticeService{
     public List<Notice> findAllWithTerms(String title, String time) {
         return noticeMapper.findAllWithTerms(title,time);
     }
+
+    @Override
+    public Notice getByNid(int nid) {
+        return noticeMapper.selectByPrimaryKey(nid);
+    }
 }

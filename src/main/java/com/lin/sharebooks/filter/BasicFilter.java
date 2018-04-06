@@ -35,9 +35,10 @@ public class BasicFilter implements Filter{
         System.out.println("<----------doFilter执行---------->");
         HttpServletRequest httpRequest=(HttpServletRequest)servletRequest;
         HttpServletResponse httpResponse=(HttpServletResponse)servletResponse;
+        //判断请求类型是否为OPTIONS,若是则直接放行
+        String method=httpRequest.getMethod();
+        System.out.println("请求的类型是:"+method);
 
-        String contextPath=httpRequest.getContextPath();
-        System.out.println("contextPath:"+contextPath);
         String url_all=httpRequest.getRequestURL().toString();
         System.out.println("请求url_all是:"+url_all);
         String url=httpRequest.getRequestURI();
@@ -46,7 +47,7 @@ public class BasicFilter implements Filter{
         System.out.println("<----------此次请求的请求头中token为:"+token+"---------->");
         System.out.println(ALLOWED_PATHS.contains(url));
         //ALLOWED_PATHS.contains(url)若为true此请求地址不进行身份验证
-        if(!ALLOWED_PATHS.contains(url)){
+        if(!("OPTIONS".equals(method))&&!ALLOWED_PATHS.contains(url)){
             if(token!=null && !("".equals(token))){
                 Object object=redisComponent.sentinelGet(token);
                 int userid = 0;

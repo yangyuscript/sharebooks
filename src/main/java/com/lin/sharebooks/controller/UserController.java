@@ -151,7 +151,7 @@ public class UserController {
         if(user==null){
             userService.addUser(new User(null,null,null,null,0,1,openid,null,null,null,null,null,DateTimeUtil.getDate()));
         }
-        redisComponent.set(session_3rd,openid);
+        redisComponent.sentinelSet(session_3rd,openid);
         redisComponent.setLongExpire(session_3rd);
         return session_3rd;
     }
@@ -479,6 +479,22 @@ public class UserController {
         Map map=new HashMap();
         Notice notice=noticeService.getByNid(nid);
         map.put("notice",notice);
+        return map;
+    }
+    /**
+     *微信小程序用户删除书籍
+     *@params:bid
+     *@return:result
+     *@date: 0:12 2018/4/8
+     **/
+    @ApiOperation(value="微信小程序",notes = "用户删除书籍")
+    @RequestMapping(value="/deleteBookByBid",method = RequestMethod.POST)
+    public Map<String,Object> deleteBookByBid(@RequestParam("bid")int bid,HttpServletRequest request) throws Exception {
+        Map map=new HashMap();
+        if(bid!=0){
+            bookService.deleteBook(bid);
+        }
+        map.put("result",ResultMsg.OK);
         return map;
     }
 }

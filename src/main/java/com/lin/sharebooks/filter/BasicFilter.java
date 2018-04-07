@@ -24,7 +24,7 @@ public class BasicFilter implements Filter{
     @Autowired
     private UserService userService;
 
-    private static final List<String> ALLOWED_PATHS=new ArrayList<>(Arrays.asList("/user/login"));
+    private static final List<String> ALLOWED_PATHS=new ArrayList<>(Arrays.asList("/user/login","/user/getToken"));
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         System.out.println("初始化过滤器sharebooks");
@@ -50,29 +50,51 @@ public class BasicFilter implements Filter{
         if(!("OPTIONS".equals(method))&&!ALLOWED_PATHS.contains(url)){
             if(token!=null && !("".equals(token))){
                 Object object=redisComponent.sentinelGet(token);
-                int userid = 0;
-                if(object!=null){
-                    System.out.println("根据token从redis中取出的内容是"+object.toString());
-                    userid = Integer.valueOf(object.toString());
-                }
-                if(userid!=0){
-                    User user = userService.getByUserid(userid);
-                    if(user!=null){
-                        if(!(url.contains("super")&&user.getCondi()== 0)){
-                            //此时请求操作为管理员权限且该用户不为管理员具有管理员权限，权限不足
-                            ResultMsg.returnErrJson(httpResponse,"此时请求操作为管理员权限且该用户不为管理员具有管理员权限，权限不足");
+                //管理员记入缓存的token对应的值是用户id
+                if(url.contains("super")){
+                    System.out.println("进入管理员权限验证");
+                    int userid = 0;
+                    if(object!=null){
+                        System.out.println("根据token从redis中取出的内容是"+object.toString());
+                        userid = Integer.valueOf(object.toString());
+                    }
+                    if(userid!=0){
+                        User user = userService.getByUserid(userid);
+                        if(user!=null){
+                            if(!(url.contains("super")&&user.getCondi()== 0)){
+                                //此时请求操作为管理员权限且该用户不为管理员具有管理员权限，权限不足
+                                ResultMsg.returnErrJson(httpResponse,"此时请求操作为管理员权限且该用户不为管理员具有管理员权限，权限不足");
+                                return ;
+                            }
+                        }else{
+                            //根据token查询到的用户无效
+                            ResultMsg.returnErrJson(httpResponse,"根据token查询到的用户无效,拒绝请求");
                             return ;
                         }
                     }else{
-                        //根据token查询到的用户无效
-                        ResultMsg.returnErrJson(httpResponse,"根据token查询到的用户无效,拒绝请求");
+                        //token失效,拒绝请求
+                        ResultMsg.returnErrJson(httpResponse,"token失效,拒绝请求");
                         return ;
                     }
-                }else{
-                    //token失效,拒绝请求
-                    ResultMsg.returnErrJson(httpResponse,"token失效,拒绝请求");
-                    return ;
+                }else{//user记入缓存中的token对应的值是openid
+                    System.out.println("进入普通用户权限验证");
+                    String openid = null;
+                    if(object!=null){
+                        openid=object.toString();
+                    }
+                    if(openid!=null){
+                        User user= userService.getByOpenid(openid);
+                        if(user==null){
+                            ResultMsg.returnErrJson(httpResponse,"根据token查询到的用户无效,拒绝请求");
+                            return ;
+                        }
+                        System.out.println("用户不为空，openid为："+openid);
+                    }else{
+                        ResultMsg.returnErrJson(httpResponse,"token失效,拒绝请求");
+                        return ;
+                    }
                 }
+
             }else{
                 //请求
                 ResultMsg.returnErrJson(httpResponse,"请求无token,拒绝请求");

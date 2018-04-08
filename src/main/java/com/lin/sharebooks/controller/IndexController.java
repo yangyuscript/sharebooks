@@ -75,9 +75,10 @@ public class IndexController {
         return map;
     }
     /**
-     *
-     *@params:
-     *@return:
+     *微信小程序用户关键词查看书籍（由近到远排序）
+     *@params:searchKey
+     *@return:Map
      *@date: 21:46 2018/3/25
      **/
+
 }

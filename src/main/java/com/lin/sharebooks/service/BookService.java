@@ -1,6 +1,7 @@
 package com.lin.sharebooks.service;
 
 import com.lin.sharebooks.model.Book;
+import com.lin.sharebooks.model.BookWithDistance;
 
 import java.util.List;
 
@@ -25,4 +26,11 @@ public interface BookService {
      *@date: 20:20 2018/2/8
      **/
     List<Book> findByUserid(int userid);
+    /**
+     *根据用户的经纬度找到其根据关键字搜索书籍（按近远排列）
+     *@params:bookname,userid
+     *@return:
+     *@date: 23:04 2018/4/8
+     **/
+    List<BookWithDistance> findCloseBookByKeyWordAndUserLocation(String bookname, int userid);
 }

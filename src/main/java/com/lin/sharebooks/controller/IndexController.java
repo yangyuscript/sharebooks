@@ -2,10 +2,12 @@ package com.lin.sharebooks.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.lin.sharebooks.model.Book;
+import com.lin.sharebooks.model.BookWithDistance;
 import com.lin.sharebooks.model.User;
 import com.lin.sharebooks.service.BookService;
 import com.lin.sharebooks.service.BookTypeService;
 import com.lin.sharebooks.service.UserService;
+import com.lin.sharebooks.util.RedisComponent;
 import com.lin.sharebooks.util.ResultMsg;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +30,8 @@ public class IndexController {
     private BookTypeService bookTypeService;
     @Autowired
     private BookService bookService;
+    @Autowired
+    private RedisComponent redisComponent;
     @ApiOperation(value="流书api首页",notes="")
     @RequestMapping(value="/",method = RequestMethod.GET)
     public String index(){
@@ -48,14 +53,17 @@ public class IndexController {
      **/
     @ApiOperation(value="微信小程序",notes = "加载首页所需数据，附近热门书籍与推荐书籍")
     @RequestMapping(value="/getInitialData",method = RequestMethod.GET)
-    public Map<String,Object> getInitialData(){
+    public Map<String,Object> getInitialData(HttpServletRequest request){
         Map map=new HashMap();
+        String token = request.getHeader("x-access-token");
+        String openid = redisComponent.sentinelGet(token).toString();
+        User user = userService.getByOpenid(openid);
         PageHelper.startPage(ResultMsg.CURRENTPAGE,5);
         List<Book> recomendBooks=bookService.findRecomendBooks();
         PageHelper.startPage(ResultMsg.CURRENTPAGE,5);
-        List<Book> newestBooks=bookService.findNewestBooks();
+        List<BookWithDistance> nearbyBooks=bookService.findCloseBookByKeyWordAndUserLocation("",user.getUserId());
         map.put("recomendBooks",recomendBooks);
-        map.put("newestBooks",newestBooks);
+        map.put("nearbyBooks",nearbyBooks);
         return map;
     }
     /**
@@ -80,5 +88,17 @@ public class IndexController {
      *@return:Map
      *@date: 21:46 2018/3/25
      **/
-
+    @ApiOperation(value="微信小程序",notes = "用户关键词查看书籍（由近到远排序）")
+    @RequestMapping(value="/searchBooksWithDistance",method = RequestMethod.GET)
+    public Map<String,Object> searchBooksWithDistance(@RequestParam("searchKey")String searchKey, @RequestParam("currPage")String currPage, HttpServletRequest request){
+        Map map=new HashMap();
+        String token = request.getHeader("x-access-token");
+        String openid = redisComponent.sentinelGet(token).toString();
+        User user = userService.getByOpenid(openid);
+        PageHelper.startPage(Integer.valueOf(currPage),ResultMsg.PAGESIZE);
+        List<BookWithDistance> searchBooks=bookService.findCloseBookByKeyWordAndUserLocation(searchKey,user.getUserId());
+        map.put("searchBooks",searchBooks);
+        map.put("result",ResultMsg.OK);
+        return map;
+    }
 }

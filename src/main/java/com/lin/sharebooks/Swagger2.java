@@ -47,4 +47,5 @@ public class Swagger2 {
                 .version("1.0.0")
                 .build();
     }
+    //http://localhost:8080/swagger-ui.html
 }

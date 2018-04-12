@@ -3,9 +3,11 @@ package com.lin.sharebooks.controller;
 import com.github.pagehelper.PageHelper;
 import com.lin.sharebooks.model.Book;
 import com.lin.sharebooks.model.BookWithDistance;
+import com.lin.sharebooks.model.Runpic;
 import com.lin.sharebooks.model.User;
 import com.lin.sharebooks.service.BookService;
 import com.lin.sharebooks.service.BookTypeService;
+import com.lin.sharebooks.service.RunpicService;
 import com.lin.sharebooks.service.UserService;
 import com.lin.sharebooks.util.RedisComponent;
 import com.lin.sharebooks.util.ResultMsg;
@@ -32,6 +34,8 @@ public class IndexController {
     private BookService bookService;
     @Autowired
     private RedisComponent redisComponent;
+    @Autowired
+    private RunpicService runpicService;
     @ApiOperation(value="流书api首页",notes="")
     @RequestMapping(value="/",method = RequestMethod.GET)
     public String index(){
@@ -99,6 +103,25 @@ public class IndexController {
         List<BookWithDistance> searchBooks=bookService.findCloseBookByKeyWordAndUserLocation(searchKey,user.getUserId());
         map.put("searchBooks",searchBooks);
         map.put("result",ResultMsg.OK);
+        return map;
+    }
+    /**
+     *微信小程序端获取滚屏
+     *@params:
+     *@return:Map
+     *@date: 23:56 2018/4/12
+     **/
+    @ApiOperation(value="微信小程序端获取滚屏",notes = "微信小程序端获取滚屏")
+    @RequestMapping(value="/getRunpics",method = RequestMethod.GET)
+    public Map<String,Object> getRunpics(){
+        Map map=new HashMap();
+        List<Runpic> list=runpicService.findAll();
+        if(null!=list&&!list.isEmpty()){
+            map.put("result",ResultMsg.OK);
+            map.put("runpics",list);
+        }else{
+            map.put("result",ResultMsg.NO);
+        }
         return map;
     }
 }

@@ -30,6 +30,8 @@ public class SuperController {
     private PostService postService;
     @Autowired
     private NoticeService noticeService;
+    @Autowired
+    private RunpicService runpicService;
     /**
      *管理员获得所有用户信息
      *@params:
@@ -205,6 +207,23 @@ public class SuperController {
     public Map<String,Object> delNotice(@RequestParam("nid")String nid) throws Exception {
         Map<String,Object> map=new HashMap<>();
         noticeService.deleteNotice(Integer.parseInt(nid));
+        map.put("status", ResultMsg.OK);
+        return map;
+    }
+    /**
+     *管理员更改滚屏信息
+     *@params:rid
+     *@return:Map
+     *@date: 0:00 2018/4/13
+     **/
+    @ApiOperation(value = "管理员更改滚屏信息",notes = "管理员更改滚屏信息")
+    @RequestMapping(value="/updateRunpic",method = RequestMethod.POST)
+    public Map<String,Object> updateRunpic(@RequestParam("rid")String rid,@RequestParam("url")String url,@RequestParam("description")String description) throws Exception {
+        Map<String,Object> map=new HashMap<>();
+        Runpic runpic=runpicService.getByRid(Integer.parseInt(rid));
+        runpic.setDescription(description);
+        runpic.setUrl(url);
+        runpicService.update(runpic);
         map.put("status", ResultMsg.OK);
         return map;
     }

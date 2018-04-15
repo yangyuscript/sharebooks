@@ -44,4 +44,12 @@ public interface LoginlogMapper extends MyMapper<Loginlog>{
             )
     })
     List<Loginlog> select2kmLoginlog(@Param("longitude")double longitude,@Param("latitude")double latitude);
+    /**
+     *根据时间获得登录人数
+     *@params:time
+     *@return:int
+     *@date: 18:56 2018/4/15
+     **/
+    @Select("select count(*) from t_loginlog where time like concat('%',concat(#{time},'%'))")
+    int selectNumByTime(String time);
 }

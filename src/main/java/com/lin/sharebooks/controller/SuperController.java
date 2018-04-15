@@ -32,6 +32,8 @@ public class SuperController {
     private NoticeService noticeService;
     @Autowired
     private RunpicService runpicService;
+    @Autowired
+    private DataService dataService;
     /**
      *管理员获得所有用户信息
      *@params:
@@ -224,6 +226,21 @@ public class SuperController {
         runpic.setDescription(description);
         runpic.setUrl(url);
         runpicService.update(runpic);
+        map.put("status", ResultMsg.OK);
+        return map;
+    }
+    /**
+     *管理员获取平台数据
+     *@params:
+     *@return:Map
+     *@date: 18:41 2018/4/15
+     **/
+    @ApiOperation(value = "管理员获取平台数据",notes = "管理员获取平台数据")
+    @RequestMapping(value="/getData",method = RequestMethod.POST)
+    public Map<String,Object> getData() throws Exception {
+        Map<String,Object> map=new HashMap<>();
+        System.out.println(dataService.getDataForWechat());
+        map.put("bigData", dataService.getDataForWechat());
         map.put("status", ResultMsg.OK);
         return map;
     }

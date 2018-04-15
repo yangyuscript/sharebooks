@@ -66,8 +66,10 @@ public class IndexController {
         List<Book> recomendBooks=bookService.findRecomendBooks();
         PageHelper.startPage(ResultMsg.CURRENTPAGE,5);
         List<BookWithDistance> nearbyBooks=bookService.findCloseBookByKeyWordAndUserLocation("",user.getUserId());
+        List<Runpic> runpics=runpicService.findAll();
         map.put("recomendBooks",recomendBooks);
         map.put("nearbyBooks",nearbyBooks);
+        map.put("runpics",runpics);
         return map;
     }
     /**

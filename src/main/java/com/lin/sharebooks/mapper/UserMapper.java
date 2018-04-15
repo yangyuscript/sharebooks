@@ -1,5 +1,6 @@
 package com.lin.sharebooks.mapper;
 
+import com.lin.sharebooks.model.DataShow;
 import com.lin.sharebooks.model.User;
 import com.lin.sharebooks.util.MyMapper;
 import org.apache.ibatis.annotations.*;
@@ -10,6 +11,18 @@ import java.util.List;
 public interface UserMapper extends MyMapper<User> {
     @Insert("insert into t_user (email,nickname,password,head,credit,condi,openid) values(#{email},#{nickname},#{password},#{head},#{credit},#{condi},#{openid})")
     void insertUser(User user);
+    @Select("select gender,count(*) as num from t_user group by gender")
+    @Results({
+            @Result(column = "gender", property = "name"),
+            @Result(column = "num", property = "value")
+    })
+    List<DataShow> selectNumByGender();
+    @Select("select province,count(*) as num from t_user group by province")
+    @Results({
+            @Result(column = "province", property = "name"),
+            @Result(column = "num", property = "value")
+    })
+    List<DataShow> selectNumByProvince();
     @Select("select * from t_user where userid=#{userid}")
     User selectById(@Param("userid") int userid);
     @Select("select * from t_user where nickname=#{nickname}")

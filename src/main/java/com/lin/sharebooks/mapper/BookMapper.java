@@ -1,6 +1,7 @@
 package com.lin.sharebooks.mapper;
 
 import com.lin.sharebooks.model.Book;
+import com.lin.sharebooks.model.DataShow;
 import com.lin.sharebooks.util.MyMapper;
 import org.apache.ibatis.annotations.*;
 
@@ -24,6 +25,15 @@ public interface BookMapper extends MyMapper<Book>{
      */
     @Select("select * from t_book order by likenum,time desc")
     List<Book> selectRecomendBooks();
+    /**
+     * 根据书籍种类查询书籍数量
+     */
+    @Select("select bt.name as booktype,count(*) as num from t_book b,t_booktype bt where b.btid=bt.btid group by b.btid")
+    @Results({
+            @Result(column = "booktype", property = "name"),
+            @Result(column = "num", property = "value")
+    })
+    List<DataShow> selectNumByBtid();
     /**
      * 查询最新的书籍
      */

@@ -46,4 +46,7 @@ public class RedisComponent {
         //设置token一星期过期
         redisTemplate.expire(key,60*60*24*29,TimeUnit.SECONDS);
     }
+    public void sentineDel(String key){
+        redisTemplate.delete(key);
+    }
 }

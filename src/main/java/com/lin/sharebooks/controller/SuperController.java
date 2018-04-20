@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.lin.sharebooks.model.*;
 import com.lin.sharebooks.service.*;
 import com.lin.sharebooks.util.DateTimeUtil;
+import com.lin.sharebooks.util.RedisComponent;
 import com.lin.sharebooks.util.ResultMsg;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,8 @@ public class SuperController {
     private RunpicService runpicService;
     @Autowired
     private DataService dataService;
+    @Autowired
+    private RedisComponent redisComponent;
     /**
      *管理员获得所有用户信息
      *@params:
@@ -242,6 +246,25 @@ public class SuperController {
         System.out.println(dataService.getDataForWechat());
         map.put("bigData", dataService.getDataForWechat());
         map.put("status", ResultMsg.OK);
+        return map;
+    }
+    /**
+     *管理员注销退出后台管理系统
+     *@params:
+     *@return:
+     *@date: 23:36 2018/4/20
+     **/
+    @ApiOperation(value = "管理员注销退出后台管理系统",notes = "管理员注销退出后台管理系统")
+    @RequestMapping(value="/logout",method = RequestMethod.POST)
+    public Map<String,Object> logout(HttpServletRequest request) throws Exception {
+        Map<String,Object> map=new HashMap<>();
+        String token = request.getHeader("x-access-token");
+        redisComponent.sentineDel(token);
+        if(null!=redisComponent.sentinelGet(token)||"".equals(redisComponent.sentinelGet(token))){
+            map.put("status", ResultMsg.NO);
+        }else{
+            map.put("status", ResultMsg.OK);
+        }
         return map;
     }
 }

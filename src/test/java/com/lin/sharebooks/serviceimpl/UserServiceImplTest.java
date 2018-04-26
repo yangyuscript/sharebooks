@@ -31,7 +31,7 @@ public class UserServiceImplTest {
     @Test
     public void testRedis(){
         //redisComponent.set("Tony3","hehe");
-        System.out.println(redisComponent.sentinelGet("C7LMilRFRgG7bqaEq2Rr/g=="));
+        System.out.println(redisComponent.sentinelGet("05qdALU2abFsQpcpEGXfZg=="));
     }
     @Test
     public void testUserPage(){

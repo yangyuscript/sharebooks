@@ -165,7 +165,7 @@ public class UserController {
     @RequestMapping(value="/updateUserInfo",method = RequestMethod.POST)
     public Map<String,Object> updateUserInfo(@RequestParam("nickName")String nickName,@RequestParam("head")String head,@RequestParam("gender")String gender,@RequestParam("city")String city,@RequestParam("province")String province,@RequestParam("country")String country,@RequestParam("language")String language,@RequestParam("token")String token){
         Map map=new HashMap();
-        String openid=redisComponent.get(token);
+        String openid=redisComponent.sentinelGet(token).toString();
         User oldUser=userService.getByOpenid(openid);
         if(oldUser==null){
             map.put("status",ResultMsg.NO);
@@ -193,7 +193,7 @@ public class UserController {
     @RequestMapping(value="/updateLoginlog",method = RequestMethod.POST)
     public Map<String,Object> updateLoginlog(@RequestParam("token")String token,@RequestParam("latitude")double latitude,@RequestParam("longitude")double longitude){
         Map map=new HashMap();
-        String openid=redisComponent.get(token);
+        String openid=redisComponent.sentinelGet(token).toString();
         User user = userService.getByOpenid(openid);
         if(user!=null){
             Loginlog loginlog= new Loginlog(user.getUserId(),longitude,latitude, DateTimeUtil.getDate());
@@ -221,7 +221,7 @@ public class UserController {
             String fileName = bookHead.getOriginalFilename();
             // 获取文件的后缀名
             String suffixName = fileName.substring(fileName.lastIndexOf("."));
-            String filePath = "e:/sbimgs/upload/";
+            String filePath = "c:/sbimgs/upload";
             // 解决中文问题，liunx下中文路径，图片显示问题
             fileName = UUID.randomUUID() + suffixName;
             System.out.println("上传的图片是："+fileName);
@@ -238,7 +238,7 @@ public class UserController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            String openid=redisComponent.get(token);
+            String openid=redisComponent.sentinelGet(token).toString();
             User user=userService.getByOpenid(openid);
             Book book=new Book(user.getUserId(),bookTypeId,bookName,fileName,bookDesc,1,DateTimeUtil.getDate(),0);
             bookService.addBook(book);
@@ -312,7 +312,7 @@ public class UserController {
     @RequestMapping(value="/getPersonalIniaData",method = RequestMethod.POST)
     public Map<String,Object> getPersonalIniaData(@RequestParam("token")String token){
         Map map=new HashMap();
-        String openid=redisComponent.get(token);
+        String openid=redisComponent.sentinelGet(token).toString();
         User user=userService.getByOpenid(openid);
         if(user!=null){
             int messagesNotReadedNum=messageService.getPersonalIniaData(user.getUserId());
@@ -334,7 +334,7 @@ public class UserController {
     @RequestMapping(value="/getAllLastestMessagesToUser",method = RequestMethod.POST)
     public Map<String,Object> getAllLastestMessagesToUser(@RequestParam("token")String token){
         Map map=new HashMap();
-        String openid=redisComponent.get(token);
+        String openid=redisComponent.sentinelGet(token).toString();
         User user=userService.getByOpenid(openid);
         if(user!=null){
             List<Message> latestMessagesToUser=messageService.findAllByTouserid(user.getUserId());
@@ -356,7 +356,7 @@ public class UserController {
     @RequestMapping(value="/getAllMessagesFromAndTo",method = RequestMethod.POST)
     public Map<String,Object> getAllMessagesFromAndTo(@RequestParam("fromuserid")String fromuserid,@RequestParam("token")String token){
         Map map=new HashMap();
-        String openid=redisComponent.get(token);
+        String openid=redisComponent.sentinelGet(token).toString();
         User touser=userService.getByOpenid(openid);
         if(touser!=null){
             //改变未读消息condi为0已读状态
@@ -384,7 +384,7 @@ public class UserController {
     @RequestMapping(value="/sendMessage",method = RequestMethod.POST)
     public Map<String,Object> sendMessage(@RequestParam("token")String token,@RequestParam("touserid")String touserid,@RequestParam("message")String message){
         Map map=new HashMap();
-        String openid=redisComponent.get(token);
+        String openid=redisComponent.sentinelGet(token).toString();
         User fromuser=userService.getByOpenid(openid);
         if(fromuser!=null){
             Message m=new Message(fromuser.getUserId(),Integer.valueOf(touserid),message,1,DateTimeUtil.getDate());
@@ -405,7 +405,7 @@ public class UserController {
     @RequestMapping(value="/findMyBooks",method = RequestMethod.POST)
     public Map<String,Object> findMyBooks(@RequestParam("token")String token,@RequestParam("currPage")String currPage){
         Map map=new HashMap();
-        String openid=redisComponent.get(token);
+        String openid=redisComponent.sentinelGet(token).toString();
         User user=userService.getByOpenid(openid);
         if(user!=null){
             PageHelper.startPage(Integer.valueOf(currPage),ResultMsg.PAGESIZE);

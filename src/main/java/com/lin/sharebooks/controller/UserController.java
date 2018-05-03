@@ -221,7 +221,7 @@ public class UserController {
             String fileName = bookHead.getOriginalFilename();
             // 获取文件的后缀名
             String suffixName = fileName.substring(fileName.lastIndexOf("."));
-            String filePath = "c:/sbimgs/upload";
+            String filePath = "c:/sbimgs/upload/";
             // 解决中文问题，liunx下中文路径，图片显示问题
             fileName = UUID.randomUUID() + suffixName;
             System.out.println("上传的图片是："+fileName);

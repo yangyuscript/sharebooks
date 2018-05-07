@@ -1,6 +1,7 @@
 package com.lin.sharebooks;
 
 import com.lin.sharebooks.mapper.BookMapper;
+import com.lin.sharebooks.mapper.LoginlogMapper;
 import com.lin.sharebooks.mapper.MessageMapper;
 import com.lin.sharebooks.mapper.UserMapper;
 
@@ -22,6 +23,8 @@ public class UserMapperTest {
     private BookMapper bookMapper;
     @Autowired(required = false)
     private MessageMapper messageMapper;
+    @Autowired(required = false)
+    private LoginlogMapper loginlogMapper;
     @Test
     public void testInsert(){
 //        User user=new User("lin2","123","123","123",123 ,1);
@@ -37,6 +40,7 @@ public class UserMapperTest {
         //User user=mapper.selectByName("test@qq.com");
         //System.out.println(user.getNickname());
         //System.out.println(readerMapper.selectByAccount("B"));
-        System.out.println(mapper.selectAllWithTerms(null,3,null));
+        //System.out.println(mapper.selectAllWithTerms(null,3,null));
+        System.out.println(loginlogMapper.selectByUserid(32).get(0).toString());
     }
 }

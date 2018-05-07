@@ -63,4 +63,7 @@ public class ResultMsg {
         return s;
     }
 
+    public static void main(String[] args) {
+        System.out.println(getDistance(118.9199,32.12463,118.9279,32.121433));
+    }
 }

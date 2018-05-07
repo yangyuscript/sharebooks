@@ -78,7 +78,7 @@ public class BookServiceImpl implements BookService{
                 double latitude_booker=loginlog_booker.getLatitude();
                 double longitude_booker=loginlog_booker.getLongitude();
                 //计算用户与当前书籍的距离
-                double distance = ResultMsg.getDistance(latitude_booker,latitude_booker,latitude_user,longitude_user);
+                double distance = ResultMsg.getDistance(latitude_booker,longitude_booker,latitude_user,longitude_user);
                 BookWithDistance bookWithDistance=new BookWithDistance();
                 bookWithDistance.setBid(book.getBid());
                 bookWithDistance.setUserid(book.getUserid());

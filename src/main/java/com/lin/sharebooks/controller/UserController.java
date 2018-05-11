@@ -149,7 +149,7 @@ public class UserController {
         }
         User user=userService.getByOpenid(openid);
         if(user==null){
-            userService.addUser(new User(null,null,null,null,0,1,openid,null,null,null,null,null,DateTimeUtil.getDate()));
+            userService.addUser(new User(null,"游客",null,null,0,1,openid,null,null,null,null,null,DateTimeUtil.getDate()));
         }
         redisComponent.sentinelSet(session_3rd,openid);
         redisComponent.setLongExpire(session_3rd);
@@ -240,7 +240,7 @@ public class UserController {
             }
             String openid=redisComponent.sentinelGet(token).toString();
             User user=userService.getByOpenid(openid);
-            Book book=new Book(user.getUserId(),bookTypeId,bookName,fileName,bookDesc,1,DateTimeUtil.getDate(),0);
+            Book book=new Book(user.getUserId(),bookTypeId,bookName,fileName,bookDesc,0,DateTimeUtil.getDate(),0);
             bookService.addBook(book);
             map.put("status",ResultMsg.OK);
         }else{

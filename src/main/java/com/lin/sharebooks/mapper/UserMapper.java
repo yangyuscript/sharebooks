@@ -9,8 +9,6 @@ import java.util.List;
 
 @Mapper
 public interface UserMapper extends MyMapper<User> {
-    @Insert("insert into t_user (email,nickname,password,head,credit,condi,openid) values(#{email},#{nickname},#{password},#{head},#{credit},#{condi},#{openid})")
-    void insertUser(User user);
     @Select("select gender,count(*) as num from t_user group by gender")
     @Results({
             @Result(column = "gender", property = "name"),

@@ -291,8 +291,9 @@ public class UserController {
         if(loginlog!=null){
             int userid=loginlog.getUserid();
             User user=userService.getByUserid(userid);
-            List<Book> bookList=bookService.findByUserid(userid);
+            System.out.println("此时发布者主页的currPage是"+currPage);
             PageHelper.startPage(currPage,ResultMsg.PAGESIZE);
+            List<Book> bookList=bookService.findByUserid(userid);
             map.put("poster",user);
             map.put("postedBooks",bookList);
             map.put("status",ResultMsg.OK);

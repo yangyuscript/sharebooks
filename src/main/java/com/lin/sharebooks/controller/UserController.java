@@ -292,8 +292,8 @@ public class UserController {
             int userid=loginlog.getUserid();
             User user=userService.getByUserid(userid);
             List<Book> bookList=bookService.findByUserid(userid);
-            map.put("poster",user);
             PageHelper.startPage(currPage,ResultMsg.PAGESIZE);
+            map.put("poster",user);
             map.put("postedBooks",bookList);
             map.put("status",ResultMsg.OK);
         }else{
